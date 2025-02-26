@@ -1,0 +1,107 @@
+"use client";
+import { useState,useEffect,useRef } from "react";
+import Image from "next/image";
+import { FaArrowRight } from "react-icons/fa";
+import useEventValuesStore from "../store/useEventValuesStore";
+import EventFields from "./EventFields";
+import Link from "next/link";
+import { HiOutlineDotsVertical } from "react-icons/hi";
+
+
+function Events({ Avatar, Name, Date, DeleteEvent, UpdateEvent,eventId }) {
+  
+  
+  const [menu, setMenu] = useState(false);
+
+
+  const [showEventFields, setShowEventFields] = useState(false);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const menuRef=useRef(null)
+
+
+useEffect(()=>{
+const handleClickOutside=()=>{
+  if (menuRef.current && !menuRef.current.contains(event.target)) {
+    setMenu(false);
+  }
+}
+document.addEventListener("mousedown", handleClickOutside);
+return () => document.removeEventListener("mousedown", handleClickOutside);
+},[])
+
+  const handelUpdate = (newName, newDate,newAvatar) => {
+    UpdateEvent(newName, newDate,newAvatar);
+
+    setMenu(false);
+  };
+  return (
+    <div className="w-1/6 mt-11 ml-5">
+      <div className="bg-gradient-to-tl from-[#4c4e50] to-[#131517]    rounded-md  relative">
+        {menu && (
+          <div ref={menuRef} className="bg-gray-700 w-24 z-30  absolute right-[-84px] top-8">
+            <button
+             onBlur={() => setTimeout(() => setMenu(false), 200)} // Delay to allow clicking menu items
+              onClick={() => {
+                setShowEventFields(true);
+                setIsUpdating(true);
+              }}
+              className="hover:bg-slate-50 w-full p-3 text-blue-300 "
+            >
+              Update
+            </button>
+
+            <button
+              onClick={() => DeleteEvent()}
+              className="text-red-600 w-full p-3 hover:bg-slate-50 "
+            >
+              Delete
+            </button>
+          </div>
+        )}
+
+        <div className="flex justify-between">
+          <div className="bg-red-400 w-20 h-20 overflow-hidden rounded-[50%] ml-2 ">
+          <Image
+            src={Avatar || "/images/EventPhoto.png"}
+            alt="EventPhoto"
+            width={80}
+            height={80}
+            className="w-full h-full object-cover object-center"
+          />
+          </div>
+          <button className="h-fit" onClick={() => setMenu(!menu)}>
+            <HiOutlineDotsVertical className="m-2 text-xl " />
+          </button>
+        </div>
+        <div className="m-6 flex flex-col justify-evenly  h-1/4">
+          <h2>{Name || "Event Name"}</h2>
+          <h3>{Date || "Date :1446"}</h3>
+        </div>
+        <div className="m-3 ">
+          <Link href={`/EventRecords/${eventId}`}>
+            <button className="flex w-10/12 justify-evenly items-center">
+              <span>See more</span>
+              <FaArrowRight />
+            </button>
+          </Link>
+        </div>
+
+      </div>
+      {showEventFields && (
+          <EventFields
+            showEventFields={showEventFields}
+            setShowEventFields={setShowEventFields}
+            handelUpdate={handelUpdate}
+            isUpdating={isUpdating}
+            oldEventName={Name}
+            oldEventDate={Date}
+            oldEventAvatar={Avatar}
+
+          />
+        )}
+      </div>
+    
+  );
+}
+
+export default Events;

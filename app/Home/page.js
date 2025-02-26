@@ -4,9 +4,9 @@ import Image from "next/image";
 import { MdOutlineMenuBook } from "react-icons/md";
 import { BsCalendar2EventFill } from "react-icons/bs";
 import { FaBoxes } from "react-icons/fa";
-import Events from "./components/Events";
-import EventFields from "./components/EventFields";
-import useEventValuesStore from "./store/useEventValuesStore";
+import Events from "../components/Events";
+import EventFields from "../components/EventFields";
+// import useEventValuesStore from "./store/useEventValuesStore";
 import { useSession } from "next-auth/react";
 
 function Home() {
@@ -147,3 +147,4 @@ formData.append("avatar",newAvatar)
 }
 
 export default Home;
+
