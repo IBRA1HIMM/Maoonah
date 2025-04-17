@@ -23,7 +23,7 @@ oldEventName,oldEventDate,oldEventAvatar
 
 {
 
-  // const { setStoredValues } = useEventValuesStore();
+ 
 
   const [eventValues, setEventValues] = useState(
     isUpdating ?{
@@ -56,6 +56,7 @@ formData.append("name",event.name)
 formData.append("date",event.date)
 formData.append("avatar",event.avatar)
 
+
     const res= await fetch("/api/events",{
       method:"POST",
       body:formData,
@@ -63,12 +64,11 @@ formData.append("avatar",event.avatar)
     });
     if (!res.ok) {
       const errorData = await res.json();
-      console.error("Failed to add event this is the one working no doubt:", errorData.error);
+      console.log(errorData)
       return;
     }
    
       const newEvent=await res.json();
-      console.log("this is the new Event avatar :", newEvent.avatar);   
       setEventList([...eventList,newEvent]);
   }
 
@@ -76,10 +76,12 @@ formData.append("avatar",event.avatar)
     // i just got too excited
     // setStoredValues(eventValues);
 
+    //updating record of an event
     if(isUpdating && comingFromRecordPage){
 
       handelUpdate(eventValues.name,eventValues.money)
     }
+    // Updating one event
     else if(isUpdating){
       handelUpdate(eventValues.name,eventValues.date,eventValues.avatar)
 

@@ -1,11 +1,13 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import DebtCard from "../../components/DebtCard";
 import EventFields from "../../components/EventFields";
 import { BsCalendar2EventFill } from "react-icons/bs";
 import { CiCirclePlus } from "react-icons/ci";
+import { useParams } from "next/navigation";
 
 function EventRecords() {
+  const {eventId}=useParams();
   const [showImageField, setShowImageFiled] = useState(false);
   const [recordList, setRecord] = useState([
     {
@@ -16,6 +18,20 @@ function EventRecords() {
   const [showEventFields, setShowEventFields] = useState(false);
   const [showMoney, setShowMoney] = useState(true);
   const [comingFromRecordPage, setComingFromRecordPage] = useState(true);
+
+  const mockupData={
+    "67c97cb4a56ddb49bf622ce6":[
+      {name:"Easa",money:20000},
+      {name:"Hadu=i",money:20500},
+      {name:"Noufel",money:30100},
+
+    ],
+    "67e9829c2f6ab8fb22991c93":[
+      {name:"bloodborne",money:20000},
+      {name:"darksouls",money:20500},
+      {name:"sekiro",money:30100},
+    ]
+  }
 
   const DeleteRecord = (name) => {
     setRecord(recordList.filter((record) => record.name !== name));
@@ -30,6 +46,12 @@ function EventRecords() {
       )
     );
   };
+
+  useEffect(()=>{
+if(eventId &&mockupData[eventId]){
+  setRecord(mockupData[eventId])
+}
+  },[])
 
   return (
     <div className="h-screen">

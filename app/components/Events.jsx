@@ -44,6 +44,7 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
               onClick={() => {
                 setShowEventFields(true);
                 setIsUpdating(true);
+                setMenu(false)
               }}
               className="hover:bg-slate-50 w-full p-3 text-blue-300 "
             >
@@ -51,7 +52,10 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
             </button>
 
             <button
-              onClick={() => DeleteEvent()}
+              onClick={() =>{ 
+                DeleteEvent()
+                setMenu(false)
+              }}
               className="text-red-600 w-full p-3 hover:bg-slate-50 "
             >
               Delete

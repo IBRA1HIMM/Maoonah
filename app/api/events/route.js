@@ -2,7 +2,6 @@ import { connectionToDatabase } from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { v2 as cloudinary } from "cloudinary";
 
-
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -26,20 +25,25 @@ export async function GET() {
 
 export async function POST(req) {
   try {
-    const formData =  await req.formData();
-    const name =  formData.get("name");
-    const date =  formData.get("date");
-    const avatar =  formData.get("avatar");
+    const formData = await req.formData();
+    const name = formData.get("name");
+    const date = formData.get("date");
+    const avatar = formData.get("avatar");
 
-    if (!avatar)
-      return Response.json({ error: "No file uploaded !!" }, { status: 400 });
+
+    let result;
+
+    if (avatar instanceof File){
       
-
+     // extracting the raw binary data form the file object
     const arrayBuffer = await avatar.arrayBuffer();
+    // convert the data to a buffer so node js can write it somewhere
     const buffer = Buffer.from(arrayBuffer);
 
     // Uploading the image to cloud storage
-    const result = await new Promise((resolve, reject) => {
+     result = await new Promise((resolve, reject) => {
+      // stream is the destination where data  will be written
+
       cloudinary.uploader
         .upload_stream({}, (error, result) => {
           if (error) reject(error);
@@ -47,23 +51,24 @@ export async function POST(req) {
         })
         .end(buffer);
     });
+    }
+
+    
 
     const { db } = await connectionToDatabase();
-    
-    
-     await db.collection("events").insertOne({
-        name,
-        date,
-        avatar:result.secure_url,
-        createdAt:new Date(),
-      })
-   
+
+    await db.collection("events").insertOne({
+      name,
+      date,
+      avatar: result?.secure_url || null,
+      createdAt: new Date(),
+    });
 
     return Response.json({
       message: "event added successfully",
       name,
       date,
-      avatar:result.secure_url,
+      avatar: result?.secure_url,
     });
   } catch (error) {
     console.error("Error adding event:", error);
@@ -76,17 +81,18 @@ export async function DELETE(req) {
     const { db } = await connectionToDatabase();
     const { id } = await req.json();
 
-
     // the steps for Deleting the image form cloudinary
-    
-    const event= await db.collection("events").findOne({_id: new ObjectId(id)});
+
+    const event = await db
+      .collection("events")
+      .findOne({ _id: new ObjectId(id) });
     if (!event) {
       return Response.json({ error: "Event not found" }, { status: 404 });
     }
 
-    const imageURL=event.avatar;
-  
-    if(imageURL){ 
+    const imageURL = event.avatar;
+
+    if (imageURL) {
       const publicId = imageURL.split("/").pop().split(".")[0];
       await cloudinary.uploader.destroy(publicId);
     }
@@ -106,21 +112,58 @@ export async function DELETE(req) {
 export async function PUT(req) {
   try {
     const { db } = await connectionToDatabase();
-    const formData =  await req.formData();
-    const newName =  formData.get("name");
-    const newDate =  formData.get("date");
-    const newAvatar =  formData.get("avatar");
-   
+
+    const formData = await req.formData();
+    const id = formData.get("id");
+    const newName = formData.get("name");
+    const newDate = formData.get("date");
+    const  newAvatar = formData.get("avatar");
+  
+
+    let newAvatarUrl=newAvatar;
+
+    if (newAvatar instanceof File) {
+      const event = await db
+        .collection("events")
+        .findOne({ _id: new ObjectId(id) });
+      const imageURL = event.avatar;
+  
+
+      if (imageURL) {
+        console.log("is this running !!!");
+        const publicId = imageURL.split("/").pop().split(".")[0];
+        await cloudinary.uploader.destroy(publicId);
+      }
+      const arrayBuffer = await newAvatar.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+
+       const result = await new Promise((resolve, reject) => {
+        cloudinary.uploader
+          .upload_stream({}, (error, result) => {
+            if (error) {
+              console.log("Cloudinary upload error :",error)
+              reject(error);
+            }
+            else resolve(result);
+          })
+          .end(buffer);
+      });
+      newAvatarUrl = result?.secure_url;
+      console.log("form result secure url : ",result.secure_url);
+      console.log("Please don't run noooooo :");
+    }
+
+    console.log("this is the photo url",newAvatarUrl);
 
     const updatedData = {
       name: newName,
       date: newDate,
-      avatar: newAvatar,
+      avatar: newAvatarUrl || null,
     };
     await db
       .collection("events")
       .updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
-    return Response.json({ message: "Event updated" });
+    return Response.json({ message: "Event updated",newAvatarUrl });
   } catch (error) {
     return Response.json({ error: "Failed to update event" }, { status: 500 });
   }
