@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState,useEffect,useRef } from "react";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import EventFields from "./EventFields";
+import RecordForm from "./RecordForm";
 
 function DebtCard({
   name,
@@ -12,8 +13,18 @@ function DebtCard({
 }) {
   const [isUpdating, setIsUpdating] = useState(false);
   const [menu, setMenu] = useState(false);
+  const menuRef=useRef(null)
   const [showEventFields, setShowEventFields] = useState(false);
   const [showMoney, setShowMoney] = useState(true);
+
+useEffect(()=>{
+const handelClickOutside=(event)=>{
+if(menuRef.current && !menuRef.current.contains(event.target))  setMenu(false)
+}
+document.addEventListener("mousedown", handelClickOutside);
+return () => document.removeEventListener("mousedown", handelClickOutside);
+
+},[])
 
   const handelUpdate = (newName, newMoney) => {
     UpdateRecord(newName, newMoney);
@@ -24,7 +35,7 @@ function DebtCard({
     <div>
       <div className="bg-gradient-to-tl from-[#4c4e50] to-[#131517] w-80 h-20   rounded-md mt-20 ml-5 relative">
         {menu && (
-          <div className="bg-gray-700 w-24 z-30  absolute right-[-84px] top-8">
+          <div className="bg-gray-700 w-24 z-30  absolute right-[-84px] top-8" ref={menuRef}>
             <button
               onClick={() => {
                 setShowEventFields(true);
@@ -56,14 +67,21 @@ function DebtCard({
         </div>
       </div>
       {showEventFields && (
-        <EventFields
-          setShowEventFields={setShowEventFields}
-          showEventFields={showEventFields}
-          handelUpdate={handelUpdate}
-          isUpdating={isUpdating}
-          showMoney={showMoney}
-          comingFromRecordPage
-        />
+        // <EventFields
+        //   setShowEventFields={setShowEventFields}
+        //   showEventFields={showEventFields}
+        //   handelUpdate={handelUpdate}
+        //   isUpdating={isUpdating}
+        //   showMoney={showMoney}
+        //   comingFromRecordPage
+        // />
+
+        <RecordForm
+        showEventFields={showEventFields}
+        setShowEventFields={setShowEventFields}
+        handelUpdate={handelUpdate}
+        isUpdating={isUpdating}
+      />
       )}
     </div>
   );

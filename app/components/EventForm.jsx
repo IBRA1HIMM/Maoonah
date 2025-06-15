@@ -1,48 +1,35 @@
 "use client";
 import { useState } from "react";
-import useEventValuesStore from "../store/useEventValuesStore";
 import { stringify } from "postcss";
 
-function EventFields({
-  showEventFields,
-  setShowEventFields,
-  eventList,
-  setEventList,
-  showImageField = true,
-  isUpdating,
-  handelUpdate,
-  setRecord,
-  recordList,
-  showMoney,
-  comingFromRecordPage,
-  oldEventName,
-  oldEventDate,
-  oldEventAvatar,
-}) {
-  const [eventValues, setEventValues] = useState(
+function EventForm({showEventFields, 
+setShowEventFields,
+eventList,
+setEventList,
+isUpdating,
+handelUpdate,
+oldEventName,
+oldEventDate,
+oldEventAvatar,})
+{
+const [eventValues, setEventValues] = useState(
     isUpdating
-      ? {
-          name: oldEventName,
-          date: oldEventDate,
-          avatar: oldEventAvatar,
-        }
-      : {
-          name: "",
-          date: "",
-          avatar: null,
-        }
-  );
-
-  const handelValues = (value, key) => {
-    setEventValues({ ...eventValues, [key]: value });
-  };
-  async function addEventToDataBase(event) {
-    if (comingFromRecordPage) {
-      const res=await fetch("/api/records",{
-        method:"POST",
-        body:stringify.json(event)
-      })
-    } else {
+    ? {
+      name: oldEventName,
+     date: oldEventDate,
+     avatar: oldEventAvatar,
+    }
+    : {
+    name: "",
+    date: "",
+     avatar: null,
+}
+); 
+      
+const handelValues = (value, key) => {
+setEventValues({ ...eventValues, [key]: value });
+}
+async function addEventToDataBase(event) {
       const formData = new FormData();
       formData.append("name", event.name);
       formData.append("date", event.date);
@@ -61,34 +48,24 @@ function EventFields({
       const newEvent = await res.json();
       setEventList([...eventList, newEvent]);
     }
-  }
-
+  
   const handelSubmit = () => {
-    // i just got too excited
-    // setStoredValues(eventValues);
 
-    //updating record of an event
-    if (isUpdating && comingFromRecordPage) {
-      handelUpdate(eventValues.name, eventValues.money);
-    }
     // Updating one event
-    else if (isUpdating) {
+     if (isUpdating) {
       handelUpdate(eventValues.name, eventValues.date, eventValues.avatar);
     }
-    // add a record to record list
-    else if (comingFromRecordPage) {
-      addEventToDataBase(eventValues);
-      // setRecord([...recordList,eventValues])
-    } else {
+ else {
       // for Updating the event List in the Home page
       addEventToDataBase(eventValues);
     }
     setShowEventFields(false);
   };
+      
   return (
     <>
       {showEventFields && (
-        <div className="absolute top-[20%] left-1/3 z-30 bg-[#1A1A1A] w-[540px]">
+        <div className="absolute top-[20%] md:left-1/3 z-30 bg-[#1A1A1A] md:w-[540px]">
           <div className=" p-8 flex flex-col gap-y-8 h-full">
             <div className="flex items-center">
               <label htmlFor="" className=" w-1/3">
@@ -103,22 +80,7 @@ function EventFields({
                 />{" "}
               </div>
             </div>
-            {showMoney && (
-              <div className="flex items-center">
-                <label htmlFor="" className=" w-1/3">
-                  Mony Amount
-                </label>
-                <div className=" w-full h-8 border-gray-500 border-solid border-2  ">
-                  <input
-                    className="bg-transparent border-none focus:outline-none focus:ring-2 ring-[#3a49df] rounded-sm w-full h-full border p-2"
-                    type="text"
-                    placeholder="How much"
-                    onChange={(e) => handelValues(e.target.value, "money")}
-                  />{" "}
-                </div>
-              </div>
-            )}
-            {!showMoney && (
+            
               <div className="flex items-center">
                 <label htmlFor="" className=" w-1/3">
                   Event Date
@@ -132,10 +94,7 @@ function EventFields({
                   />{" "}
                 </div>
               </div>
-            )}
-
-            {/* Hiding Image field for Record page */}
-            {showImageField && (
+           
               <div className="flex items-center">
                 <label htmlFor="" className=" w-1/3">
                   Event Avatar
@@ -149,7 +108,7 @@ function EventFields({
                   />{" "}
                 </div>
               </div>
-            )}
+     
             <div className="flex   h-full relative top-7 justify-between">
               <button
                 onClick={() => setShowEventFields(false)}
@@ -169,6 +128,6 @@ function EventFields({
       )}
     </>
   );
-}
+      }
 
-export default EventFields;
+export default EventForm;

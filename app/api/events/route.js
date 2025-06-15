@@ -79,7 +79,7 @@ export async function POST(req) {
 export async function DELETE(req) {
   try {
     const { db } = await connectionToDatabase();
-    const { id } = await req.json();
+    const id  = await req.json();
 
     // the steps for Deleting the image form cloudinary
 

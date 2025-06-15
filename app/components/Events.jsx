@@ -6,6 +6,7 @@ import useEventValuesStore from "../store/useEventValuesStore";
 import EventFields from "./EventFields";
 import Link from "next/link";
 import { HiOutlineDotsVertical } from "react-icons/hi";
+import EventForm from "./EventForm";
 
 
 function Events({ Avatar, Name, Date, DeleteEvent, UpdateEvent,eventId }) {
@@ -20,7 +21,7 @@ function Events({ Avatar, Name, Date, DeleteEvent, UpdateEvent,eventId }) {
 
 
 useEffect(()=>{
-const handleClickOutside=()=>{
+const handleClickOutside=(event)=>{
   if (menuRef.current && !menuRef.current.contains(event.target)) {
     setMenu(false);
   }
@@ -35,7 +36,7 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
     setMenu(false);
   };
   return (
-    <div className="w-1/6 mt-11 ml-5">
+    <div className="my-11 mx-2 md:w-40">
       <div className="bg-gradient-to-tl from-[#4c4e50] to-[#131517]    rounded-md  relative">
         {menu && (
           <div ref={menuRef} className="bg-gray-700 w-24 z-30  absolute right-[-84px] top-8">
@@ -62,9 +63,9 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
             </button>
           </div>
         )}
-
+        {/* first row div for the image and the three dots */}
         <div className="flex justify-between">
-          <div className="bg-red-400 w-20 h-20 overflow-hidden rounded-[50%] ml-2 ">
+          <div className="bg-red-400 w-12 h-12 md:w-16 md:h-16 overflow-hidden rounded-[50%] ml-2 ">
           <Image
             src={Avatar || "/images/EventPhoto.png"}
             alt="EventPhoto"
@@ -92,15 +93,20 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
 
       </div>
       {showEventFields && (
-          <EventFields
-            showEventFields={showEventFields}
+          // <EventFields
+          //   showEventFields={showEventFields}
+          //   setShowEventFields={setShowEventFields}
+          
+
+          // />
+          <EventForm
+          showEventFields={showEventFields}
             setShowEventFields={setShowEventFields}
             handelUpdate={handelUpdate}
             isUpdating={isUpdating}
             oldEventName={Name}
             oldEventDate={Date}
             oldEventAvatar={Avatar}
-
           />
         )}
       </div>

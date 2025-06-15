@@ -1,9 +1,7 @@
 "use client";
-import { useSession,signIn,signOut } from "next-auth/react";
+import { useSession,signIn} from "next-auth/react";
 
 function SignIn() {
-
-
  
     return (
       <div className="flex justify-center items-center h-screen">
@@ -13,10 +11,6 @@ function SignIn() {
       </div>
       </div>
     )
-
-
-  
-
 
 }
 

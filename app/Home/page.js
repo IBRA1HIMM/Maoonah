@@ -3,13 +3,14 @@ import { useState, useEffect } from "react";
 import Events from "../components/Events";
 import EventFields from "../components/EventFields";
 import NavBar from "../components/NavBar";
+import EventForm from "../components/EventForm";
 // import useEventValuesStore from "./store/useEventValuesStore";
 
 function Home() {
   // const {storedName,storedDate,storedAvatar}=useEventValuesStore()
 
   const [showEventFields, setShowEventFields] = useState(false);
-  const [showImageField, setShowImageFiled] = useState(true);
+
 
   const [eventList, setEventList] = useState([{}]);
 
@@ -20,7 +21,7 @@ function Home() {
     async function fetchEvents() {
       const res = await fetch("/api/events");
       const data = await res.json();
-      setEventList(data);
+      setEventList(prevEventList=>[...prevEventList,...data]);
     }
     fetchEvents();
   }, []);
@@ -53,7 +54,7 @@ formData.append("avatar",newAvatar)
     });
 
    const {newAvatarUrl}= await req.json();
-   console.log("this is the updated :" , );
+
     setEventList(
       eventList.map((event) =>
         event._id === id
@@ -65,11 +66,11 @@ formData.append("avatar",newAvatar)
 
 
   return (
-    <div className="h-screen flex">
+    <div className="flex">
       {/* NavBar */}
       <NavBar setShowEventFields={setShowEventFields}/>
- 
-      <div className=" h-fit  w-full flex flex-wrap  ">
+
+      <div className=" h-fit  w-full flex flex-wrap justify-center items-center">
         {eventList.map((event, index) => (
           <Events
             key={index}
@@ -83,20 +84,25 @@ formData.append("avatar",newAvatar)
             }
           />
         ))}
+
+        
       </div>
       {showEventFields && (
-        <EventFields
-          showEventFields={showEventFields}
+        // <EventFields
+        //   showEventFields={showEventFields}
+        //   setShowEventFields={setShowEventFields}
+        //   eventList={eventList}
+        //   setEventList={setEventList}
+        //   showImageField={showImageField}
+        // />
+        <EventForm
+        showEventFields={showEventFields}
           setShowEventFields={setShowEventFields}
           eventList={eventList}
           setEventList={setEventList}
-          showImageField={showImageField}
         />
       )}
-      {/* <div>
-      <h1>Click n=on the link please!</h1>
-      <a href="api/auth/signin"> sign IN with github</a>
-    </div> */}
+    
     </div>
   );
 }

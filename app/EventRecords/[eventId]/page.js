@@ -5,10 +5,10 @@ import EventFields from "../../components/EventFields";
 import { BsCalendar2EventFill } from "react-icons/bs";
 import { CiCirclePlus } from "react-icons/ci";
 import { useParams } from "next/navigation";
+import RecordForm from "@/app/components/RecordForm";
 
 function EventRecords() {
   const {eventId}=useParams();
-  const [showImageField, setShowImageFiled] = useState(false);
   const [recordList, setRecord] = useState([
     {
       name: "Rakan Mohamed Easa Bahni",
@@ -16,7 +16,6 @@ function EventRecords() {
     },
   ]);
   const [showEventFields, setShowEventFields] = useState(false);
-  const [showMoney, setShowMoney] = useState(true);
   const [comingFromRecordPage, setComingFromRecordPage] = useState(true);
 
   const mockupData={
@@ -32,9 +31,34 @@ function EventRecords() {
       {name:"sekiro",money:30100},
     ]
   }
+    const fetchRecords= async (eventId)=>{
+     const res= await fetch(`/api/records?eventId=${eventId}`,{
+        method:"GET",
+        headers: { "Content-Type": "application/json" },
+       
+      })
+      const respond= await res.json();
 
-  const DeleteRecord = (name) => {
-    setRecord(recordList.filter((record) => record.name !== name));
+    if (respond.length === 0) return 
+     
+      setRecord([...recordList,...respond])
+    }
+
+  const DeleteRecord = async(recordId) => {
+    const res = await fetch("/api/records/",{
+      method:"DELETE",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(recordId)
+    })
+    const{message}= await res.json()
+    if(res.ok){
+      console.log(message);
+    setRecord(recordList.filter((record) => record._id !== recordId));
+
+    }
+    else{
+      console.error("Failed to delete record", message);
+    }
   };
 
   const UpdateRecord = (name, newName, newMoney) => {
@@ -48,10 +72,13 @@ function EventRecords() {
   };
 
   useEffect(()=>{
-if(eventId &&mockupData[eventId]){
-  setRecord(mockupData[eventId])
+if(eventId){
+  // setRecord(mockupData[eventId])
+  fetchRecords(eventId)
 }
   },[])
+  
+
 
   return (
     <div className="h-screen">
@@ -70,7 +97,7 @@ if(eventId &&mockupData[eventId]){
             key={index}
             name={record.name}
             money={record.money}
-            DeleteRecord={() => DeleteRecord(record.name)}
+            DeleteRecord={() => DeleteRecord(record._id)}
             setShowEventFields={setShowEventFields}
             comingFromRecordPage={comingFromRecordPage}
             UpdateRecord={(newName, newMoney) =>
@@ -80,7 +107,7 @@ if(eventId &&mockupData[eventId]){
           />
         ))}
       </div>
-      <EventFields
+      {/* <EventFields
         showEventFields={showEventFields}
         setShowEventFields={setShowEventFields}
         showImageField={showImageField}
@@ -88,6 +115,14 @@ if(eventId &&mockupData[eventId]){
         setRecord={setRecord}
         showMoney={showMoney}
         comingFromRecordPage={comingFromRecordPage}
+      /> */}
+
+      <RecordForm
+        showEventFields={showEventFields}
+        setShowEventFields={setShowEventFields}
+        recordList={recordList}
+        setRecord={setRecord}
+        eventId={eventId}
       />
     </div>
   );

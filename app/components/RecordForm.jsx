@@ -1,0 +1,106 @@
+"use client";
+import { useState } from "react";
+import { stringify } from "postcss";
+
+function RecordForm({
+  showEventFields,
+  setShowEventFields,
+  isUpdating,
+  handelUpdate,
+  setRecord,
+  recordList,
+  eventId
+}) {
+  const [recordValues, setRecordValues] = useState({
+    name: "",
+    money: 0,
+  });
+
+  async function addToDataBase(record){
+const completeRecord={...record,eventId};
+
+const res= await fetch("/api/records/",{
+  method:"POST",
+headers:  { "Content-Type": "application/json" },
+  body:JSON.stringify(completeRecord)
+})
+
+if(res.ok){
+  setRecord([...recordList,completeRecord])
+ 
+}
+
+  }
+
+  const handelSubmit = () => {
+    // i just got too excited
+    // setStoredValues(eventValues);
+
+    //updating record of an event
+    if (isUpdating) {
+      handelUpdate(recordValues.name, recordValues.money);
+    }
+   else {
+    // add a record to record list
+    addToDataBase(recordValues)
+      // setRecord([...recordList,recordValues])
+    
+    }
+    setShowEventFields(false);
+  };
+
+  return (
+    <>
+      {showEventFields && (
+        <div className="absolute top-[20%] left-1/3 z-30 bg-[#1A1A1A] w-[540px]">
+          <div className=" p-8 flex flex-col gap-y-8 h-full">
+            <div className="flex items-center">
+              <label htmlFor="" className=" w-1/3">
+                Name
+              </label>
+              <div className=" w-full h-8 border-gray-500 border-solid border-2  ">
+                <input
+                  className="bg-transparent border-none focus:outline-none focus:ring-2 ring-[#3a49df] rounded-sm w-full h-full border p-2"
+                  type="text"
+                  placeholder="name of the Donar"
+                  onChange={(e) => setRecordValues({...recordValues,name:e.target.value})}
+                />{" "}
+              </div>
+            </div>
+
+            <div className="flex items-center">
+              <label htmlFor="" className=" w-1/3">
+                Mony Amount
+              </label>
+              <div className=" w-full h-8 border-gray-500 border-solid border-2  ">
+                <input
+                  className="bg-transparent border-none focus:outline-none focus:ring-2 ring-[#3a49df] rounded-sm w-full h-full border p-2"
+                  type="text"
+                  placeholder="How much"
+                  onChange={(e) => setRecordValues({...recordValues,money:e.target.value})}
+                />{" "}
+              </div>
+            </div>
+
+            <div className="flex   h-full relative top-7 justify-between">
+              <button
+                onClick={() => setShowEventFields(false)}
+                className="bg-gradient-to-b from-[#df3a3a] to-[#e80d0d] w-24 h-11 rounded-md"
+              >
+                cancel
+              </button>
+              <button
+                onClick={handelSubmit}
+                className="bg-gradient-to-b from-[#3a49df] to-[#9499de] w-24 h-11 rounded-md"
+              >
+                add record
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+export default RecordForm;
