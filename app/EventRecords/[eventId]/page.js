@@ -1,11 +1,13 @@
 "use client";
 import { useState,useEffect } from "react";
 import DebtCard from "../../components/DebtCard";
-import EventFields from "../../components/EventFields";
 import { BsCalendar2EventFill } from "react-icons/bs";
 import { CiCirclePlus } from "react-icons/ci";
 import { useParams } from "next/navigation";
 import RecordForm from "@/app/components/RecordForm";
+import { loadFromLocal } from "@/app/utils/localStorage";
+import { getSession } from "next-auth/react";
+
 
 function EventRecords() {
   const {eventId}=useParams();
@@ -32,6 +34,8 @@ function EventRecords() {
     ]
   }
     const fetchRecords= async (eventId)=>{
+      const session=await getSession();
+      if(session){
      const res= await fetch(`/api/records?eventId=${eventId}`,{
         method:"GET",
         headers: { "Content-Type": "application/json" },
@@ -42,9 +46,18 @@ function EventRecords() {
     if (respond.length === 0) return 
      
       setRecord([...recordList,...respond])
+      }
+      else{
+      //tranvirsing the local storage to find the records associated with that eventId
+    const storedRecords=loadFromLocal("guest_records")
+      const filterdRecords= storedRecords.filter((record)=>record.eventId == eventId );
+      setRecord(filterdRecords)
+      }
     }
 
-  const DeleteRecord = async(recordId) => {
+  const DeleteRecord = async(recordId,recordGuestId) => {
+    const session = await getSession();
+    if(session){
     const res = await fetch("/api/records/",{
       method:"DELETE",
       headers:{"Content-Type":"application/json"},
@@ -59,6 +72,11 @@ function EventRecords() {
     else{
       console.error("Failed to delete record", message);
     }
+  }
+  else{
+    console.log("this is the record id ", recordGuestId)
+     setRecord(recordList.filter((record) => record.recordId !== recordGuestId))
+  }
   };
 
   const UpdateRecord = (name, newName, newMoney) => {
@@ -73,16 +91,13 @@ function EventRecords() {
 
   useEffect(()=>{
 if(eventId){
-  // setRecord(mockupData[eventId])
   fetchRecords(eventId)
+
 }
   },[])
-  
-
-
   return (
     <div className="h-screen">
-      <div className="bg-gradient-to-b from-[#3a49df] to-[#9499de] h-12 w-1/6   mx-auto relative top-3 rounded-full hover:opacity-75">
+      <div className="bg-gradient-to-b from-[#3a49df] to-[#9499de] h-12 md:w-2/6  w-full md:mx-auto relative top-3 rounded-full hover:opacity-75">
         <button
           className=" w-full flex  items-center h-full  justify-center text-lg"
           onClick={() => setShowEventFields(true)}
@@ -91,13 +106,13 @@ if(eventId){
           <div>Create A Record</div>
         </button>
       </div>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap   items-center justify-center">
         {recordList.map((record, index) => (
           <DebtCard
             key={index}
             name={record.name}
             money={record.money}
-            DeleteRecord={() => DeleteRecord(record._id)}
+            DeleteRecord={() => DeleteRecord(record._id,record.recordId)}
             setShowEventFields={setShowEventFields}
             comingFromRecordPage={comingFromRecordPage}
             UpdateRecord={(newName, newMoney) =>
@@ -107,16 +122,6 @@ if(eventId){
           />
         ))}
       </div>
-      {/* <EventFields
-        showEventFields={showEventFields}
-        setShowEventFields={setShowEventFields}
-        showImageField={showImageField}
-        recordList={recordList}
-        setRecord={setRecord}
-        showMoney={showMoney}
-        comingFromRecordPage={comingFromRecordPage}
-      /> */}
-
       <RecordForm
         showEventFields={showEventFields}
         setShowEventFields={setShowEventFields}

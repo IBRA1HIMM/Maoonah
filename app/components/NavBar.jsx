@@ -42,7 +42,7 @@ const [showNavbar,setNavbar]=useState(true);
           className=" w-full flex  items-center h-full justify-center gap-2"
           onClick={() => {
             setShowEventFields(true)
-            setNavbar(false)
+          
           }}
         >
           <BsCalendar2EventFill  />

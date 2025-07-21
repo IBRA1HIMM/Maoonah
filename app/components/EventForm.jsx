@@ -1,6 +1,10 @@
 "use client";
 import { useState } from "react";
 import { stringify } from "postcss";
+import { saveToLocal,loadFromLocal } from "../utils/localStorage";
+import {v4 as uuidv4} from "uuid";
+import { getSession } from "next-auth/react";
+
 
 function EventForm({showEventFields, 
 setShowEventFields,
@@ -29,7 +33,10 @@ const [eventValues, setEventValues] = useState(
 const handelValues = (value, key) => {
 setEventValues({ ...eventValues, [key]: value });
 }
+
 async function addEventToDataBase(event) {
+const session= await getSession();
+  if(session){
       const formData = new FormData();
       formData.append("name", event.name);
       formData.append("date", event.date);
@@ -48,7 +55,26 @@ async function addEventToDataBase(event) {
       const newEvent = await res.json();
       setEventList([...eventList, newEvent]);
     }
-  
+    else{
+      const newEvent={
+        ...event,
+        avatar:event.avatar ? URL.createObjectURL(event.avatar) : null,
+        guest_id:uuidv4(),
+      }
+      const Allevents=[...loadFromLocal("guest_events"),newEvent]
+      saveToLocal("guest_events",Allevents);
+      setEventList(Allevents);
+
+      // Linkein Post!!!
+    //   const avatarFakeUrl={...event,avatar:URL.createObjectURL(event.avatar)}
+    //   const eventWithID={...avatarFakeUrl,guest_id:uuidv4()}
+    // const localEvents= loadFromLocal("guest_events");
+    // const newLocalEvents=[...localEvents,eventWithID];
+    // saveToLocal("guest_events",newLocalEvents);
+    // setEventList(newLocalEvents);
+    }
+    }
+
   const handelSubmit = () => {
 
     // Updating one event
@@ -56,7 +82,7 @@ async function addEventToDataBase(event) {
       handelUpdate(eventValues.name, eventValues.date, eventValues.avatar);
     }
  else {
-      // for Updating the event List in the Home page
+    
       addEventToDataBase(eventValues);
     }
     setShowEventFields(false);

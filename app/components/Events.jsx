@@ -3,7 +3,6 @@ import { useState,useEffect,useRef } from "react";
 import Image from "next/image";
 import { FaArrowRight } from "react-icons/fa";
 import useEventValuesStore from "../store/useEventValuesStore";
-import EventFields from "./EventFields";
 import Link from "next/link";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import EventForm from "./EventForm";
@@ -93,12 +92,6 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
 
       </div>
       {showEventFields && (
-          // <EventFields
-          //   showEventFields={showEventFields}
-          //   setShowEventFields={setShowEventFields}
-          
-
-          // />
           <EventForm
           showEventFields={showEventFields}
             setShowEventFields={setShowEventFields}

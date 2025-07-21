@@ -1,6 +1,9 @@
 "use client";
 import { useState } from "react";
 import { stringify } from "postcss";
+import { getSession } from "next-auth/react";
+import { loadFromLocal, saveToLocal } from "../utils/localStorage";
+import {v4 as uuidv4} from "uuid"
 
 function RecordForm({
   showEventFields,
@@ -17,17 +20,31 @@ function RecordForm({
   });
 
   async function addToDataBase(record){
-const completeRecord={...record,eventId};
 
+const completeRecord={...record,eventId};
+const sesstion = await getSession();
+if (sesstion){
 const res= await fetch("/api/records/",{
   method:"POST",
 headers:  { "Content-Type": "application/json" },
   body:JSON.stringify(completeRecord)
 })
 
+
 if(res.ok){
   setRecord([...recordList,completeRecord])
  
+}
+}
+else{
+  //storing record in local storage with the eventId to know which record belong to which event
+  
+  const recordWithId={...recordValues,eventId,recordId:uuidv4()}
+ const allRecords=[...loadFromLocal("guest_records") || [],recordWithId]
+    saveToLocal("guest_records",allRecords);
+      const storedRecords=loadFromLocal("guest_records")
+      const filterdRecords= storedRecords.filter((record)=>record.eventId == eventId );
+      setRecord(filterdRecords)
 }
 
   }
@@ -43,7 +60,6 @@ if(res.ok){
    else {
     // add a record to record list
     addToDataBase(recordValues)
-      // setRecord([...recordList,recordValues])
     
     }
     setShowEventFields(false);

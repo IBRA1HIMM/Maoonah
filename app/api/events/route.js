@@ -130,7 +130,6 @@ export async function PUT(req) {
   
 
       if (imageURL) {
-        console.log("is this running !!!");
         const publicId = imageURL.split("/").pop().split(".")[0];
         await cloudinary.uploader.destroy(publicId);
       }
@@ -149,11 +148,9 @@ export async function PUT(req) {
           .end(buffer);
       });
       newAvatarUrl = result?.secure_url;
-      console.log("form result secure url : ",result.secure_url);
-      console.log("Please don't run noooooo :");
+      
     }
 
-    console.log("this is the photo url",newAvatarUrl);
 
     const updatedData = {
       name: newName,
