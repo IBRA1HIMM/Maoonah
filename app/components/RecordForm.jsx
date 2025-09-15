@@ -68,7 +68,7 @@ else{
   return (
     <>
       {showEventFields && (
-        <div className="absolute top-[20%] left-1/3 z-30 bg-[#1A1A1A] w-[540px]">
+        <div className="absolute top-[20%]  z-30 bg-[#1A1A1A] md:w-[540px] w-full md:left-1/3">
           <div className=" p-8 flex flex-col gap-y-8 h-full">
             <div className="flex items-center">
               <label htmlFor="" className=" w-1/3">

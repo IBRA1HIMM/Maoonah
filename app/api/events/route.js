@@ -57,7 +57,7 @@ export async function POST(req) {
 
     const { db } = await connectionToDatabase();
 
-    await db.collection("events").insertOne({
+    const insertResult =await db.collection("events").insertOne({
       name,
       date,
       avatar: result?.secure_url || null,
@@ -69,6 +69,7 @@ export async function POST(req) {
       name,
       date,
       avatar: result?.secure_url,
+      _id:insertResult.insertedId
     });
   } catch (error) {
     console.error("Error adding event:", error);
@@ -97,6 +98,13 @@ export async function DELETE(req) {
       await cloudinary.uploader.destroy(publicId);
     }
 
+    const record =await db.collection("records").find({}).toArray()
+    console.log("this is the Id form req",id)
+    console.log("this is a the record value types",record)
+
+    await db.collection("records").deleteMany({ eventId:new ObjectId(id) });
+
+    
     await db.collection("events").deleteOne({ _id: new ObjectId(id) });
 
     return Response.json({ message: "Event has been deleted" });

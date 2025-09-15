@@ -11,19 +11,27 @@ function Home() {
   // const {storedName,storedDate,storedAvatar}=useEventValuesStore()
   const [showEventFields, setShowEventFields] = useState(false);
   const [eventList, setEventList] = useState([{}]);
-
   //Backend Code to interact with the database
 
   //bring events from DB after the component mount
   useEffect(() => {
-    // async function fetchEvents() {
-    //   const res = await fetch("/api/events");
-    //   const data = await res.json();
-    //   setEventList(data);
-    // }
-    // fetchEvents();
+    async function fetchEvents() {
+    const sesstion = await getSession();
+    if(sesstion){
+      const res = await fetch("/api/events");
+      const data = await res.json();
+      setEventList(data);
+    }
+    
+    else{
    const data= loadFromLocal("guest_events");
    setEventList(data)
+      alert("you are in guest mode")
+
+    }
+  }
+    fetchEvents();
+
   }, []);
 
 
@@ -49,7 +57,6 @@ const session = await getSession();
     setEventList(EventsFiltered);
   }
   }
-
   
 //  Update the Event in the DB and th UI
   async function UpdateEvent(id, newName, newDate, newAvatar) {

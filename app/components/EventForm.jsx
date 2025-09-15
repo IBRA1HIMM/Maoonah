@@ -53,6 +53,7 @@ const session= await getSession();
       }
 
       const newEvent = await res.json();
+      console.log("this form the EVent Form page and this is the event object :",newEvent)
       setEventList([...eventList, newEvent]);
     }
     else{

@@ -5,18 +5,14 @@ import { BsCalendar2EventFill } from "react-icons/bs";
 import { CiCirclePlus } from "react-icons/ci";
 import { useParams } from "next/navigation";
 import RecordForm from "@/app/components/RecordForm";
-import { loadFromLocal } from "@/app/utils/localStorage";
+import { loadFromLocal, saveToLocal } from "@/app/utils/localStorage";
 import { getSession } from "next-auth/react";
+import Link from "next/link";
 
 
 function EventRecords() {
   const {eventId}=useParams();
-  const [recordList, setRecord] = useState([
-    {
-      name: "Rakan Mohamed Easa Bahni",
-      money: 70000,
-    },
-  ]);
+  const [recordList, setRecord] = useState([{}]);
   const [showEventFields, setShowEventFields] = useState(false);
   const [comingFromRecordPage, setComingFromRecordPage] = useState(true);
 
@@ -55,7 +51,7 @@ function EventRecords() {
       }
     }
 
-  const DeleteRecord = async(recordId,recordGuestId) => {
+  const DeleteRecord = async(recordId,deletedRecordId) => {
     const session = await getSession();
     if(session){
     const res = await fetch("/api/records/",{
@@ -74,8 +70,12 @@ function EventRecords() {
     }
   }
   else{
-    console.log("this is the record id ", recordGuestId)
-     setRecord(recordList.filter((record) => record.recordId !== recordGuestId))
+    //for guest mode 
+    const Allrecords= loadFromLocal("guest_records");
+    //just taking the records related to the event 
+    const filterdRecords=Allrecords.filter((record) => record.recordId !== deletedRecordId && record.eventId ==eventId)
+    saveToLocal("guest_records",filterdRecords)
+     setRecord(filterdRecords)
   }
   };
 
@@ -96,8 +96,9 @@ if(eventId){
 }
   },[])
   return (
-    <div className="h-screen">
-      <div className="bg-gradient-to-b from-[#3a49df] to-[#9499de] h-12 md:w-2/6  w-full md:mx-auto relative top-3 rounded-full hover:opacity-75">
+    <div>
+      <div className="flex items-center justify-between flex-row-reverse">
+      <div className="bg-gradient-to-b from-[#3a49df] to-[#9499de] h-12 md:w-2/6  w-8/12 md:mx-auto  relative top-3   rounded-full hover:opacity-75">
         <button
           className=" w-full flex  items-center h-full  justify-center text-lg"
           onClick={() => setShowEventFields(true)}
@@ -106,6 +107,9 @@ if(eventId){
           <div>Create A Record</div>
         </button>
       </div>
+     <Link href={"/Home"} className="text-blue-500 hover:text-white text-xl pt-7 pl-3">Back</Link>
+      </div>
+
       <div className="flex flex-wrap   items-center justify-center">
         {recordList.map((record, index) => (
           <DebtCard

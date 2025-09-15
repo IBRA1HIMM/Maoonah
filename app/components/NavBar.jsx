@@ -8,16 +8,31 @@ import { FaBoxes } from "react-icons/fa";
 import { CiLogout } from "react-icons/ci";
 import { TbXboxX } from "react-icons/tb";
 import { IoMenu } from "react-icons/io5";
-
-
+import { useRef,useEffect } from "react";
 
 function NavBar({setShowEventFields}) {
 const [showNavbar,setNavbar]=useState(true);
+const navRef=useRef(null)
+
+useEffect(()=>{
+function handelClickOutside(event){
+  if(window.innerWidth<768){
+  if(navRef.current && !navRef.current.contains(event.target)){
+    setNavbar(false)
+  }
+}
+}
+document.addEventListener("mousedown",handelClickOutside)
+
+ return () => {
+      document.removeEventListener("mousedown", handelClickOutside);
+    };
+},[])
 
   return(
     
    showNavbar ?( 
-    <div className="flex flex-col absolute md:static z-20 md:w-64 w-full md:h-[90vh] h-auto bg-[#1A1A1A] md:m-4 md:mt-7  p-4 rounded-lg ">
+    <div ref={navRef} className="flex flex-col absolute md:static z-20 md:w-64 w-full md:h-[90vh] h-auto bg-[#1A1A1A] md:m-4 md:mt-7  p-4 rounded-lg ">
     <div className="w-full h-2/5">
       {/* Title and logo div */}
       <div className="flex items-center justify-between  mb-6">

@@ -22,7 +22,7 @@ export async function POST(req) {
     await db.collection("records").insertOne({
       name: recordValues.name,
       money: recordValues.money,
-      eventId: recordValues.eventId,
+      eventId:new ObjectId (recordValues.eventId),
       createdAt: new Date(),
     });
 

@@ -67,7 +67,7 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
           <div className="bg-red-400 w-12 h-12 md:w-16 md:h-16 overflow-hidden rounded-[50%] ml-2 ">
           <Image
             src={Avatar || "/images/EventPhoto.png"}
-            alt="EventPhoto"
+            alt="image"
             width={80}
             height={80}
             className="w-full h-full object-cover object-center"
