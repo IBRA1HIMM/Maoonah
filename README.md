@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Maoona 
+Maoona helps you **remember who gave you money and during which event**, based on a local tradition where people give money at life events (like weddings, car issues, etc.).  
+It makes it easy to keep track of events, records, and contributions.  
 
-## Getting Started
+---
 
-First, run the development server:
+##  Features  
+-  Create and manage events  
+-  Record who gave you money and when  
+-  Guest mode (try without signing up)  
+-  Authentication for saving data securely  
 
+---
+
+##  Tech Stack  
+- **Frontend:** Next.js 14, React, Tailwind CSS  
+- **Backend:** Next.js API routes, MongoDB  
+- **Auth:** NextAuth.js  
+- **Storage:** Cloudinary (for images)  
+
+---
+
+##  Getting Started  
+
+### 1. Clone the repo  
 ```bash
+git clone https://github.com/yourusername/maoona.git
+cd maoona
+2. Install dependencies
+npm install
+
+3. Setup environment variables
+
+Create a .env.local file in the root and add:
+
+MONGODB_URI=your_mongodb_connection_string
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+CLOUDINARY_URL=your_cloudinary_url
+
+4. Run locally
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<img width="1920" height="1080" alt="Screenshot (6)" src="https://github.com/user-attachments/assets/c0bb63fe-9f55-4b5c-a0fd-3bfe15f9f522" />
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<img width="1920" height="1080" alt="Screenshot (7)" src="https://github.com/user-attachments/assets/d05e98c7-1351-495b-81d5-097df2ecd337" />
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
