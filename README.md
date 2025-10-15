@@ -23,7 +23,6 @@ It makes it easy to keep track of events, records, and contributions.
 ##  Getting Started  
 
 ### 1. Clone the repo  
-```bash
 git clone https://github.com/yourusername/maoona.git
 cd maoona
 2. Install dependencies
@@ -40,8 +39,9 @@ CLOUDINARY_URL=your_cloudinary_url
 
 4. Run locally
 npm run dev
+### Home Page
 <img width="1920" height="1080" alt="Screenshot (6)" src="https://github.com/user-attachments/assets/c0bb63fe-9f55-4b5c-a0fd-3bfe15f9f522" />
-
+### Event Details Page
 <img width="1920" height="1080" alt="Screenshot (7)" src="https://github.com/user-attachments/assets/d05e98c7-1351-495b-81d5-097df2ecd337" />
 
 
