@@ -3,12 +3,17 @@ import GitHubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 
+//Fake cordenitals
 const users=[{id:1,name:"Gustave",email:"Gustave@Jaicom.com",password:"123456"}]
-
+  const secret = process.env.NEXTAUTH_SECRET;
+ 
+if (!secret || secret.length < 32) {
+  throw new Error('NEXTAUTH_SECRET must be at least 32 characters');
+}
 
 
 export const authOptions = {
-  debug: true,
+  
   providers: [
     GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
@@ -28,7 +33,7 @@ export const authOptions = {
         password: { label: "Password", type: "password" }
 },
 
-// check if the submited inofs exits in databse we are using an array for now
+// check if the submited inofs exits in databse we are using an array for now just testing
 async authorize(credentials){
   const user = users.find(u =>u.email ==credentials.email && u.password ==credentials.password);
   if(!user){

@@ -10,7 +10,7 @@ import { loadFromLocal, saveToLocal } from "../utils/localStorage";
 function Home() {
   // const {storedName,storedDate,storedAvatar}=useEventValuesStore()
   const [showEventFields, setShowEventFields] = useState(false);
-  const [eventList, setEventList] = useState([{}]);
+  const [eventList, setEventList] = useState([]);
   //Backend Code to interact with the database
 
   //bring events from DB after the component mount

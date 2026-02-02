@@ -1,6 +1,8 @@
 import { connectionToDatabase } from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { v2 as cloudinary } from "cloudinary";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -9,6 +11,10 @@ cloudinary.config({
 });
 
 export async function GET() {
+  const session= await getServerSession(authOptions)
+  if(!session){
+    return Response.json({error :"unathurizod access"},{status:401})
+  }
   try {
     const { db } = await connectionToDatabase();
     const events = await db.collection("events").find({}).toArray();
@@ -24,6 +30,12 @@ export async function GET() {
 }
 
 export async function POST(req) {
+
+   const session= await getServerSession(authOptions)
+  if(!session){
+    return Response.json({error :"unathurizod access"},{status:401})
+  }
+
   try {
     const formData = await req.formData();
     const name = formData.get("name");
@@ -33,7 +45,28 @@ export async function POST(req) {
 
     let result;
 
+      if (!name || typeof name !== 'string' || name.length > 100) {
+    return Response.json({ error: "Invalid name" }, { status: 400 });
+  }
+  
+  if (!date || isNaN(Date.parse(date))) {
+    return Response.json({ error: "Invalid date" }, { status: 400 });
+  }
+  
+  // Sanitize inputs
+  const sanitizedName = name.trim();
+
     if (avatar instanceof File){
+
+      if (avatar.size > 5 * 1024 * 1024) {
+    return Response.json({ error: "File too large" }, { status: 400 });
+  }
+  
+  // Validate file type
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedTypes.includes(avatar.type)) {
+    return Response.json({ error: "Invalid file type" }, { status: 400 });
+  }
       
      // extracting the raw binary data form the file object
     const arrayBuffer = await avatar.arrayBuffer();
@@ -78,6 +111,12 @@ export async function POST(req) {
 }
 
 export async function DELETE(req) {
+
+ const session= await getServerSession(authOptions)
+  if(!session){
+    return Response.json({error :"unathurizod access"},{status:401})
+  }
+
   try {
     const { db } = await connectionToDatabase();
     const id  = await req.json();
@@ -118,6 +157,12 @@ export async function DELETE(req) {
 }
 
 export async function PUT(req) {
+
+ const session= await getServerSession(authOptions)
+  if(!session){
+    return Response.json({error :"unathurizod access"},{status:401})
+  }
+
   try {
     const { db } = await connectionToDatabase();
 

@@ -30,7 +30,7 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
 },[])
 
   const handelUpdate = (newName, newDate,newAvatar) => {
-    UpdateEvent(newName, newDate,newAvatar);
+    UpdateEvent(eventId,newName, newDate,newAvatar);
 
     setMenu(false);
   };
@@ -39,7 +39,7 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
       <div className="bg-gradient-to-tl from-[#4c4e50] to-[#131517]    rounded-md  relative">
         {menu && (
           <div ref={menuRef} className="bg-gray-700 w-24 z-30  absolute right-[-84px] top-8">
-            <button
+            { process.env.NODE_ENV==="development"&&(<button
              onBlur={() => setTimeout(() => setMenu(false), 200)} // Delay to allow clicking menu items
               onClick={() => {
                 setShowEventFields(true);
@@ -50,7 +50,7 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
             >
               Update
             </button>
-
+            )}
             <button
               onClick={() =>{ 
                 DeleteEvent()

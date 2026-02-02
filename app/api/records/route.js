@@ -1,9 +1,22 @@
 import { connectionToDatabase } from "@/app/lib/mongodb";
 import { ObjectId } from "mongodb";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function GET(req) {
+
+const session = await getServerSession(authOptions);
+if(!session){
+  return Response.json({error:"unathourized access"},{status:401})
+}
+
   const { searchParams } = new URL(req.url);
   const eventId = searchParams.get("eventId");
+
+ if (!eventId || !ObjectId.isValid(eventId)) {
+    return Response.json({ error: "Invalid eventId" }, { status: 400 });
+  }
+
   const { db } = await connectionToDatabase();
   const recordsList = await db
     .collection("records")
@@ -14,6 +27,13 @@ export async function GET(req) {
 }
 
 export async function POST(req) {
+
+if(!session){
+  return Response.json({error:"unathourized access"},{status:401})
+}
+
+
+
   try {
     const recordValues = await req.json();
 
@@ -37,6 +57,12 @@ export async function POST(req) {
 }
 
 export async function DELETE(req) {
+
+if(!session){
+  return Response.json({error:"unathourized access"},{status:401})
+}
+
+
   try {
     const recordId = await req.json();
     const { db } = await connectionToDatabase();

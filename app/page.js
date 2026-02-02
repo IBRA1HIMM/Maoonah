@@ -45,14 +45,13 @@ function SignIn() {
 
 
         {/* GitHub Sign-In */}
-        <button
-          className="mb-6 bg-white text-black px-4 py-2 rounded hover:bg-gray-300"
-          
-        >
-          <Link href={"/Home"}>
-          Enter in guest Mode
-          </Link>
-        </button>
+        <Link href="/Home">
+  <button
+    className="mb-6 bg-white text-black px-4 py-2 rounded hover:bg-gray-300"
+  >
+    Enter in guest Mode
+  </button>
+</Link>
          <button
           className="mb-6 bg-red-900 text-white px-4 py-2 rounded hover:bg-gray-600"
           onClick={() => signIn('google',{callbackUrl:"/Home"})}
