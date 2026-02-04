@@ -27,6 +27,7 @@ if(!session){
 }
 
 export async function POST(req) {
+const session = getServerSession(authOptions);
 
 if(!session){
   return Response.json({error:"unathourized access"},{status:401})
@@ -57,7 +58,7 @@ if(!session){
 }
 
 export async function DELETE(req) {
-
+const session = getServerSession(authOptions);
 if(!session){
   return Response.json({error:"unathourized access"},{status:401})
 }
