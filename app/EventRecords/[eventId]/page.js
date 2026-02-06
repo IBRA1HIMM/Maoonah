@@ -12,7 +12,7 @@ import Link from "next/link";
 
 function EventRecords() {
   const {eventId}=useParams();
-  const [recordList, setRecord] = useState([{}]);
+  const [recordList, setRecord] = useState([]);
   const [showEventFields, setShowEventFields] = useState(false);
   const [comingFromRecordPage, setComingFromRecordPage] = useState(true);
 

@@ -8,6 +8,7 @@ import { loadFromLocal, saveToLocal } from "../utils/localStorage";
 // import useEventValuesStore from "./store/useEventValuesStore";
 
 function Home() {
+ 
   // const {storedName,storedDate,storedAvatar}=useEventValuesStore()
   const [showEventFields, setShowEventFields] = useState(false);
   const [eventList, setEventList] = useState([]);

@@ -11,7 +11,7 @@ function SignIn() {
     return (
 <div className="flex justify-center items-center h-screen">
       <div className="h-fit w-[90%] max-w-md bg-[#1A1A1A] p-8 rounded-lg flex flex-col items-center justify-center">
-        <h1 className="text-white text-lg mb-6 text-center">Access Denied. You should sign in first or Enter in guest mode</h1>
+        <h1 className="text-white text-lg mb-6 text-center"> You can sign in or Enter in guest mode</h1>
         
 
         {/* Email/Password Form */}
