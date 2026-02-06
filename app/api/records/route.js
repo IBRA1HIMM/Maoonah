@@ -20,7 +20,7 @@ if(!session){
   const { db } = await connectionToDatabase();
   const recordsList = await db
     .collection("records")
-    .find({ eventId: eventId })
+    .find({ eventId: new ObjectId(eventId) })
     .toArray();
 
   return Response.json(recordsList);
