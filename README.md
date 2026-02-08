@@ -49,7 +49,7 @@ npm run dev
 ### Event Details Page
 <img width="1920" height="1080" alt="Screenshot (7)" src="https://github.com/user-attachments/assets/d05e98c7-1351-495b-81d5-097df2ecd337" />
 
-##Live Demo( still fixing things )
+## Live Demo( still fixing things )
 
 
 https://maoonah-1qp1uix75-ibrahims-projects-72ecaf2d.vercel.app/
