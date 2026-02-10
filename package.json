@@ -11,7 +11,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.5.1",
-    "mongodb": "^6.13.1",
+    "mongodb": "^7.1.0",
     "next": "15.2.8",
     "next-auth": "^4.24.11",
     "react": "^19.0.0",
