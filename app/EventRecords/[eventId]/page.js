@@ -61,7 +61,7 @@ function EventRecords() {
     })
     const{message}= await res.json()
     if(res.ok){
-      console.log(message);
+     
     setRecord(recordList.filter((record) => record._id !== recordId));
 
     }

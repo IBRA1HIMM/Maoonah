@@ -6,13 +6,14 @@ import useEventValuesStore from "../store/useEventValuesStore";
 import Link from "next/link";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import EventForm from "./EventForm";
+import { getSession } from "next-auth/react";
 
 
 function Events({ Avatar, Name, Date, DeleteEvent, UpdateEvent,eventId }) {
   
   
   const [menu, setMenu] = useState(false);
-
+  const [isLogged,setIsLogged] =useState(false)
 
   const [showEventFields, setShowEventFields] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -25,12 +26,26 @@ const handleClickOutside=(event)=>{
     setMenu(false);
   }
 }
+async function checkSession(){
+  const session = await getSession();
+  if(session) setIsLogged(true)
+    else setIsLogged(false)
+}
+checkSession();
+
 document.addEventListener("mousedown", handleClickOutside);
 return () => document.removeEventListener("mousedown", handleClickOutside);
 },[])
-
+async function LoggedIn(){
+const session = await getSession();
+if (session) return true
+else return false
+}
   const handelUpdate = (newName, newDate,newAvatar) => {
-    UpdateEvent(eventId,newName, newDate,newAvatar);
+      
+      console.log("this the new Aavatar URl before going to update function ",newAvatar)
+
+    UpdateEvent(eventId,newName, newDate,newAvatar instanceof File ? newAvatar : null);
 
     setMenu(false);
   };
@@ -39,7 +54,7 @@ return () => document.removeEventListener("mousedown", handleClickOutside);
       <div className="bg-gradient-to-tl from-[#4c4e50] to-[#131517]    rounded-md  relative">
         {menu && (
           <div ref={menuRef} className="bg-gray-700 w-24 z-30  absolute right-[-84px] top-8">
-            { process.env.NODE_ENV==="development"&&(<button
+            {isLogged&&(<button
              onBlur={() => setTimeout(() => setMenu(false), 200)} // Delay to allow clicking menu items
               onClick={() => {
                 setShowEventFields(true);

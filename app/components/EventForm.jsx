@@ -31,6 +31,7 @@ const [eventValues, setEventValues] = useState(
 ); 
       
 const handelValues = (value, key) => {
+  
 setEventValues({ ...eventValues, [key]: value });
 }
 
@@ -51,9 +52,9 @@ const session= await getSession();
         console.log(errorData);
         return;
       }
-      console.log("this is the session vlaue",session)
+    
       const newEvent = await res.json();
-      console.log("this form the EVent Form page and this is the event object :",newEvent)
+    
       setEventList([...eventList, newEvent]);
     }
     else{
@@ -80,6 +81,8 @@ const session= await getSession();
 
     // Updating one event
      if (isUpdating) {
+
+
       handelUpdate(eventValues.name, eventValues.date, eventValues.avatar);
     }
  else {
@@ -103,6 +106,7 @@ const session= await getSession();
                   className="bg-transparent border-none focus:outline-none focus:ring-2 ring-[#3a49df] rounded-sm w-full h-full border p-2"
                   type="text"
                   placeholder="name of the event"
+                  value={eventValues.name}
                   onChange={(e) => handelValues(e.target.value, "name")}
                 />{" "}
               </div>
@@ -117,6 +121,7 @@ const session= await getSession();
                     className="bg-transparent border-none focus:outline-none focus:ring-2 ring-[#3a49df] rounded-sm w-full h-full border p-2"
                     type="Date"
                     placeholder="name of the event"
+                    value={eventValues.date}
                     onChange={(e) => handelValues(e.target.value, "date")}
                   />{" "}
                 </div>
@@ -131,7 +136,7 @@ const session= await getSession();
                     className="bg-transparent border-none focus:outline-none focus:ring-2 ring-[#3a49df] rounded-sm w-full h-full border p-2"
                     type="file"
                     placeholder="name of the event"
-                    onChange={(e) => handelValues(e.target.files[0], "avatar")}
+                    onChange={(e) => handelValues(e.target.files[0] || eventValues.avatar, "avatar")}
                   />{" "}
                 </div>
               </div>
@@ -147,7 +152,7 @@ const session= await getSession();
                 onClick={handelSubmit}
                 className="bg-gradient-to-b from-[#3a49df] to-[#9499de] w-24 h-11 rounded-md"
               >
-                add Event
+                  {isUpdating ? "Update" : "Add Event"}
               </button>
             </div>
           </div>

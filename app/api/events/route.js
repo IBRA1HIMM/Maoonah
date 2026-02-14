@@ -138,9 +138,7 @@ export async function DELETE(req) {
     }
 
     const record =await db.collection("records").find({}).toArray()
-    console.log("this is the Id form req",id)
-    console.log("this is a the record value types",record)
-
+   
     await db.collection("records").deleteMany({ eventId:new ObjectId(id) });
 
     
@@ -164,31 +162,38 @@ export async function PUT(req) {
   }
 
   try {
+    
     const { db } = await connectionToDatabase();
+
 
     const formData = await req.formData();
     const id = formData.get("id");
     const newName = formData.get("name");
     const newDate = formData.get("date");
     const  newAvatar = formData.get("avatar");
+    
+
+  const existingEvents= await db.collection("events").findOne({_id:new ObjectId(id)})
+  if(!existingEvents){
+    Response.json({error: "event Not Found!"},{status:404})
+  }
   
 
-    let newAvatarUrl=newAvatar;
-
+    let newAvatarUrl=existingEvents.avatar;
     if (newAvatar instanceof File) {
-      const event = await db
-        .collection("events")
-        .findOne({ _id: new ObjectId(id) });
-      const imageURL = event.avatar;
-  
+     
+      const imageURL = existingEvents.avatar;
 
       if (imageURL) {
+      
         const publicId = imageURL.split("/").pop().split(".")[0];
-        await cloudinary.uploader.destroy(publicId);
+       const deleteResult = await cloudinary.uploader.destroy(publicId);
+       
       }
+      
       const arrayBuffer = await newAvatar.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-
+      
        const result = await new Promise((resolve, reject) => {
         cloudinary.uploader
           .upload_stream({}, (error, result) => {
@@ -196,7 +201,11 @@ export async function PUT(req) {
               console.log("Cloudinary upload error :",error)
               reject(error);
             }
-            else resolve(result);
+            
+            else{
+            
+               resolve(result);
+            }
           })
           .end(buffer);
       });
@@ -208,11 +217,14 @@ export async function PUT(req) {
     const updatedData = {
       name: newName,
       date: newDate,
-      avatar: newAvatarUrl || null,
+      avatar: newAvatarUrl,
     };
-    await db
+   
+     await db
       .collection("events")
       .updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
+     
+    
     return Response.json({ message: "Event updated",newAvatarUrl });
   } catch (error) {
     return Response.json({ error: "Failed to update event" }, { status: 500 });

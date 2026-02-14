@@ -12,6 +12,8 @@ function Home() {
   // const {storedName,storedDate,storedAvatar}=useEventValuesStore()
   const [showEventFields, setShowEventFields] = useState(false);
   const [eventList, setEventList] = useState([]);
+
+
   //Backend Code to interact with the database
 
   //bring events from DB after the component mount
@@ -62,12 +64,14 @@ const session = await getSession();
 //  Update the Event in the DB and th UI
   async function UpdateEvent(id, newName, newDate, newAvatar) {
 
-
     const formData= new FormData();
 formData.append("id",id)
 formData.append("name",newName)
 formData.append("date",newDate)
+if (newAvatar instanceof File){
 formData.append("avatar",newAvatar)
+}
+   
    const req= await fetch("/api/events", {
       method: "PUT",
       body:formData,
@@ -78,7 +82,7 @@ formData.append("avatar",newAvatar)
     setEventList(
       eventList.map((event) =>
         event._id === id
-          ? { ...event, name: newName, date: newDate, avatar: newAvatarUrl }
+          ? { ...event, name: newName, date: newDate,avatar:newAvatarUrl }
           : event
       )
     );
@@ -98,7 +102,7 @@ formData.append("avatar",newAvatar)
             Name={event.name}
             Date={event.date}
             DeleteEvent={() => DeleteEvent(event._id,event.name)}
-            UpdateEvent={(newName, newDate, newAvatar) =>
+            UpdateEvent={(eventId,newName, newDate, newAvatar) =>
               UpdateEvent(event._id, newName, newDate, newAvatar)
             }
           />
